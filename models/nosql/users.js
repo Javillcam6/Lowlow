@@ -12,7 +12,8 @@ const userScheme = new mongoose.Schema (
         },
         email: {
             type:String,
-            unique:true
+            sparse: true,
+            // unique:true
         },
         password: {
             type: String,
@@ -29,4 +30,4 @@ const userScheme = new mongoose.Schema (
     }
 )
 
-module.exports = mongoose.model("packages", userScheme)
+module.exports = mongoose.model("users", userScheme)

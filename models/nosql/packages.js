@@ -19,6 +19,9 @@ const packagesScheme = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        mediaId: {
+            type: mongoose.Types.ObjectId
+        }
     },
     {
         timestamps: true, // TODO LO RELACIONADO A createdAt, updatedAt
