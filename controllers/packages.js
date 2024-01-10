@@ -24,7 +24,16 @@ const getItems = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const getItem = (req, res) => {
+const getItem = async (req, res) => {
+    try{
+        req = matchedData(req)
+        const {id} = req;
+        const data = await PackagesModel.findById({id})
+        res.send({data})
+    } catch (e) {
+        console.log(e)
+        handleHttpError(res,"ERROR AL TRAER EL ITEM")
+    }
 
 }
 
@@ -65,7 +74,15 @@ const createItem = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const updateItem = (req, res) => {
+const updateItem = async (req, res) => {
+    try{
+        const {id, ...body} =  matchedData(req)  // Esto nos permite de un objeto crear dos objetos separando el id y el body
+        const data = await PackagesModel.findOneAndUpdate(id,body);
+        res.send({ data });
+    } catch (e) {
+        console.log(e)
+        handleHttpError(res,"ERROR AL ACTUALIZAR LOS ITEMS")
+    }
 
 }
 
@@ -75,7 +92,16 @@ const updateItem = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const deleteItem = (req, res) => {
+const deleteItem = async (req, res) => {
+    try{
+        req = matchedData(req)
+        const {id} = req;
+        const data = await PackagesModel.deleteOne({_id:id})
+        res.send({data})
+    } catch (e) {
+        console.log(e)
+        handleHttpError(res,"ERROR AL ELIMINAR EL ITEM")
+    }
 
 }
 

@@ -12,8 +12,14 @@ const validatorCreateItem = [
     }
 ]
 
+const validatorGetItem = [
+  check("mediaId").exists().notEmpty(),
+  (req, res, next) => {
+    return validateResults(req, res, next) // Respondemos ante una peticion gracias al Middleware
+  }
+]
 
-module.exports = { validatorCreateItem }  //Importamos desde routes
+module.exports = { validatorCreateItem, validatorGetItem }  //Importamos desde routes
 
 
 //** Nota

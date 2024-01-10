@@ -1,8 +1,8 @@
 const { Router } = require ("express")
 const router = Router()
 const customHeader = require("../middlewares/customHeader")
-const {validatorCreateItem} = require("../validators/packages")
-const { getItems, createItem } = require("../controllers/packages")
+const {validatorCreateItem, validatorGetItem} = require("../validators/packages")
+const { getItems, createItem, getItem, updateItem, deleteItem } = require("../controllers/packages")
 
 
 //Lista 
@@ -10,10 +10,35 @@ const { getItems, createItem } = require("../controllers/packages")
 
 // router.get("/get",)
 
+
+
+/***
+ * Lista los ITEMS desde la base de datos
+ */
 router.get("/", getItems) // Obtiene la lista de la DB
 
-// router.post("/", customHeader, createItem) //Inserta un registro
-router.post("/", validatorCreateItem, createItem) //Inserta un registro
+/**
+ * Obtener un detalle de Items
+ */
+router.get("/:id", validatorGetItem, getItem) 
+
+/**
+ * Crear registro
+ */
+// router.post("/", customHeader, createItem) 
+router.post("/", validatorCreateItem, createItem) 
+
+/**
+ * Actualizar registro
+ */
+router.put("/:id", validatorCreateItem, validatorCreateItem, updateItem) 
+
+/**
+ * Eliminar registro
+ */
+router.delete("/:id", validatorCreateItem, validatorCreateItem, deleteItem) 
+
+
 
 
 
