@@ -1,5 +1,7 @@
 const { restart } = require('nodemon')
 const { PackagesModel }  = require('../models')
+const { matchedData } = require('express-validator')
+const {handleHttpError} = require("../utils/handleError")
 
 
 /** 
@@ -8,8 +10,12 @@ const { PackagesModel }  = require('../models')
  * @param {*} res 
  */
 const getItems = async (req, res) => {
-    const data = await PackagesModel.find({})
-    res.send({data})
+    try{
+        const data = await PackagesModel.find({})
+        res.send({data})
+    } catch (e) {
+        handleHttpError(res,"ERROR AL TRAER EL ITEM")
+    }
 }
 
 
@@ -29,11 +35,18 @@ const getItem = (req, res) => {
  */
 const createItem = async (req, res) => {
     // try {
-        const { body } = req;
-        console.log(body);
+        try{
+            const body = matchedData(req)
+            const data = await PackagesModel.create(body);
+            res.send({ data });
+        } catch (e) {
+            handleHttpError(res,"ERROR AL CREAR LOS ITEMS")
+        }
+    
+    
+    
+    
 
-        const data = await PackagesModel.create(body);
-        res.send({ data });
     // } catch (error) {
     //     console.log(error);
 

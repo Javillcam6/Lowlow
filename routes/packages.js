@@ -12,8 +12,8 @@ const { getItems, createItem } = require("../controllers/packages")
 
 router.get("/", getItems) // Obtiene la lista de la DB
 
-router.post("/", customHeader, createItem) //Inserta un registro
-// router.post("/", validatorCreateItem, customHeader, createItem) //Inserta un registro
+// router.post("/", customHeader, createItem) //Inserta un registro
+router.post("/", validatorCreateItem, createItem) //Inserta un registro
 
 
 
