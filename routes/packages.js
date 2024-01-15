@@ -1,6 +1,7 @@
 const { Router } = require ("express")
 const router = Router()
-const customHeader = require("../middlewares/customHeader")
+const authMiddlware = require("../middlewares/session")
+const checkRol = require ("../middlewares/rol")
 const {validatorCreateItem, validatorGetItem} = require("../validators/packages")
 const { getItems, createItem, getItem, updateItem, deleteItem } = require("../controllers/packages")
 
@@ -15,7 +16,7 @@ const { getItems, createItem, getItem, updateItem, deleteItem } = require("../co
 /***
  * Lista los ITEMS desde la base de datos
  */
-router.get("/", getItems) // Obtiene la lista de la DB
+router.get("/", authMiddlware, getItems) // Obtiene la lista de la DB
 
 /**
  * Obtener un detalle de Items
@@ -26,7 +27,7 @@ router.get("/:id", validatorGetItem, getItem)
  * Crear registro
  */
 // router.post("/", customHeader, createItem) 
-router.post("/", validatorCreateItem, createItem) 
+router.post("/", authMiddlware, checkRol (["user","admin"]), validatorCreateItem, createItem) 
 
 /**
  * Actualizar registro

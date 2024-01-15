@@ -1,6 +1,12 @@
 const { restart } = require('nodemon')
+const fs = require("fs")
 const { StorageModel }  = require('../models')
-const PUBLIC_URL = process.env.PUBLIC_URL
+const {handleHttpError} = require("../utils/handleError")
+const { matchedData } = require("express-validator");
+
+const PUBLIC_URL = process.env.PUBLIC_URL  //RUTA PUBLICA   
+const MEDIA_PATH = `${__dirname}/../storage` //RUTA PRIVA Y ABSOLUTA DEL ARCHIVO
+
 
 
 /** 
@@ -9,8 +15,12 @@ const PUBLIC_URL = process.env.PUBLIC_URL
  * @param {*} res 
  */
 const getItems = async (req, res) => {
-    const data = await StorageModel.find({})
-    res.send({data})
+    try{
+        const data = await StorageModel.find({})
+        res.send({data})
+    } catch (e) {
+        handleHttpError(res,"ERROR AL TRAER LA LISTA DE ITEMS")
+    }
 }
 
 
@@ -19,7 +29,15 @@ const getItems = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const getItem = (req, res) => {
+const getItem = async (req, res) => {
+    try{
+        const {id} = req.params
+        console.log("id", id)
+        const data = await StorageModel.findById(id)
+        res.send({data})
+    } catch (e) {
+        handleHttpError(res,"ERROR AL TRAER EL ITEM")
+    }
 
 }
 
@@ -29,7 +47,7 @@ const getItem = (req, res) => {
  * @param {*} res 
  */
 const createItem = async (req, res) => {
-
+    try{
         const { body, file } = req;
         console.log(file);
         const fileData = {
@@ -38,6 +56,11 @@ const createItem = async (req, res) => {
         }
         const data = await StorageModel.create(fileData);
         res.send({ data });
+    } catch (e){
+        handleHttpError(res,"ERROR AL CREAR EL ITEM")
+
+    }
+
 
 };
 
@@ -58,9 +81,45 @@ const updateItem = (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const deleteItem = (req, res) => {
-
-}
+// const deleteItem = async (req, res) => {
+//     try{
+//         const {id} = req.params
+//         console.log("id", id)
+//         const findMedia = await StorageModel.findById(id)
+//         const {fileName} = findMedia.filename  // destructuramos y posteriormente eliminamos con la opcion de filePath
+//         const filePath = `${MEDIA_PATH}/${fileName}`  //Traes solamente de dato la opcion filename
+//         fs.unlinkSync(filePath)
+//         const data = {
+//             filePath,
+//             delete:1
+//         }
+//         res.send({data})
+//     } catch (e) {
+//         handleHttpError(res,"ERROR ELIMINAR EL ITEM")
+//         console.log(e)
+//     }
+// }
+const deleteItem = async (req, res) => {
+    try {
+    //   req = matchedData(req);
+      const {id} = req.params;
+      const findMedia = await StorageModel.findById(id);
+      const fileName = findMedia.filename;
+      console.log(findMedia)
+         await StorageModel.findByIdAndDelete(id);
+      fs.unlinkSync(`${MEDIA_PATH}/${fileName}`);
+  
+      const data = {
+        findMedia: fileName,
+        deleted: true,
+      };
+  
+      res.send({ data });
+    } catch (e) {
+        console.log(e)
+      handleHttpError(res, e);
+    }
+  };
 
 
 module.exports = { getItems, getItem, createItem, updateItem, deleteItem}

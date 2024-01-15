@@ -11,8 +11,9 @@ const {handleHttpError} = require("../utils/handleError")
  */
 const getItems = async (req, res) => {
     try{
+        const user = req.user
         const data = await PackagesModel.find({})
-        res.send({data})
+        res.send({data, user})
     } catch (e) {
         handleHttpError(res,"ERROR AL TRAER EL ITEM")
     }
@@ -26,9 +27,10 @@ const getItems = async (req, res) => {
  */
 const getItem = async (req, res) => {
     try{
-        req = matchedData(req)
-        const {id} = req;
-        const data = await PackagesModel.findById({id})
+        // req = matchedData(req)
+        const {id} = req.params
+        console.log("id", id)
+        const data = await PackagesModel.findOneData(id)
         res.send({data})
     } catch (e) {
         console.log(e)
@@ -94,8 +96,8 @@ const updateItem = async (req, res) => {
  */
 const deleteItem = async (req, res) => {
     try{
-        req = matchedData(req)
-        const {id} = req;
+        // req = matchedData(req)
+        const {id} = req.params;
         const data = await PackagesModel.deleteOne({_id:id})
         res.send({data})
     } catch (e) {

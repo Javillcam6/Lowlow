@@ -6,8 +6,6 @@ const dbConnect = async () => {
         // Conexión e importación de la base de datos
         const DB_URI = process.env.DB_URI;
         await mongoose.connect(DB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
         });
         console.log("Base de datos conectada");
     } catch (err) {
